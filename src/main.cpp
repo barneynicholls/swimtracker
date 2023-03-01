@@ -40,7 +40,7 @@ DallasTemperature sensors(&oneWire);
 // globals
 bool toggled = false;
 
-void logData(float lat, float lon)
+void logData(float lat, float lon, float alt, float kmh, float course, unsigned short sats, float temp)
 {
 
   File file = SD.open("/data.txt", FILE_APPEND);
@@ -50,9 +50,11 @@ void logData(float lat, float lon)
     return;
   }
 
-  String line = String(lat, 3);
-  line.concat(",");
-  line.concat(String(lon, 3).c_str());
+  char line[100];
+
+  sprintf(line, 
+  "%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f",
+  lat,lon,alt,kmh,course,TinyGPS::cardinal(course),sats,temp);
 
   if (file.println(line))
   {
@@ -65,6 +67,12 @@ void logData(float lat, float lon)
   file.close();
 }
 
+void deleteData()
+{
+  SD.remove("/data.txt");
+  server.send(200, "text/plain", "Data File Deleted");
+}
+
 void getData()
 {
   File dataFile = SD.open("/data.txt");
@@ -73,7 +81,7 @@ void getData()
   {
     return;
   }
-
+  server.sendHeader("Content-Disposition","attachment;filename=swim_track_exportedData.csv");
   if (server.streamFile(dataFile, "text/plain") != dataFile.size())
   {
     Serial.println("Sent less data than expected!");
@@ -115,19 +123,27 @@ void handleRoot()
 {
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
-  bool invalidTemp = temperatureC < -50 || temperatureC > 100;
+  // bool invalidTemp = temperatureC < -50 || temperatureC > 100;
 
-  String temp = invalidTemp ? "--.-" : String(temperatureC, 1);
-  temp.concat("c");
-  digitalWrite(LED_BUILTIN, HIGH);
-  server.send(200, "text/plain", temp);
-  digitalWrite(LED_BUILTIN, LOW);
+  // String temp = invalidTemp ? "--.-" : String(temperatureC, 1);
+  // temp.concat("c");
+  // digitalWrite(LED_BUILTIN, HIGH);
+  // server.send(200, "text/plain", temp);
+  // digitalWrite(LED_BUILTIN, LOW);
+  char html[1000];
+
+  sprintf(
+      html,
+      "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css\" integrity=\"sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65\" crossorigin=\"anonymous\"><title>Swim Tracker</title><meta http-equiv=\"refresh\" content=\"10\"></head><body><h1>Swim Tracker</h1><h2>Current</h2><p>Temperature: %.1fc</p><h2>Archive</h2><p><a href='/data'>Retrieve Data</a></p><p><a href='/delete'>Delete Data</a></p></body></html>",
+      temperatureC);
+
+  server.send(200, "text/html", html);
 }
 
 void handleNotFound()
 {
   digitalWrite(LED_BUILTIN, HIGH);
-  String message = "File Not Foundnn";
+  String message = "File Not Found";
   message += "URI: ";
   message += server.uri();
   message += "nMethod: ";
@@ -168,9 +184,8 @@ void setup(void)
 
   // web server
   server.on("/data", HTTP_GET, getData);
+  server.on("/delete", HTTP_GET, deleteData);
   server.on("/", handleRoot);
-  server.on("/inline", []()
-            { server.send(200, "text/plain", "this works as well"); });
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("HTTP server started");
@@ -259,7 +274,7 @@ void loop(void)
 
   } while (u8g2.nextPage());
 
-  logData(flat, flon);
+  logData(flat, flon, falt, fspeed, fcourse, uSats, temperatureC);
 
   smartdelay(2000);
 }
