@@ -28,6 +28,10 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+// Swim Tracker
+#include "Logger.h"
+Logger logger;
+
 // GPIO where the DS18B20 is connected to
 const int oneWireBus = 27;
 
@@ -39,33 +43,6 @@ DallasTemperature sensors(&oneWire);
 
 // globals
 bool toggled = false;
-
-void logData(float lat, float lon, float alt, float kmh, float course, unsigned short sats, float temp)
-{
-
-  File file = SD.open("/data.txt", FILE_APPEND);
-  if (!file)
-  {
-    Serial.println("Failed to open file for appending");
-    return;
-  }
-
-  char line[100];
-
-  sprintf(line, 
-  "%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f",
-  lat,lon,alt,kmh,course,TinyGPS::cardinal(course),sats,temp);
-
-  if (file.println(line))
-  {
-    Serial.println("Message appended");
-  }
-  else
-  {
-    Serial.println("Append failed");
-  }
-  file.close();
-}
 
 void deleteData()
 {
@@ -274,7 +251,7 @@ void loop(void)
 
   } while (u8g2.nextPage());
 
-  logData(flat, flon, falt, fspeed, fcourse, uSats, temperatureC);
+  logger.log(flat, flon, falt, fspeed, fcourse, uSats, temperatureC);
 
   smartdelay(2000);
 }
