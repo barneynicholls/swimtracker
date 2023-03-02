@@ -30,6 +30,7 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
 
 // Swim Tracker
 #include "Logger.h"
+#include "LogEntry.h"
 Logger logger;
 
 // GPIO where the DS18B20 is connected to
@@ -58,7 +59,7 @@ void getData()
   {
     return;
   }
-  server.sendHeader("Content-Disposition","attachment;filename=swim_track_exportedData.csv");
+  server.sendHeader("Content-Disposition", "attachment;filename=swim_track_exportedData.csv");
   if (server.streamFile(dataFile, "text/plain") != dataFile.size())
   {
     Serial.println("Sent less data than expected!");
@@ -193,6 +194,21 @@ void loop(void)
   falt = gps.f_altitude();
   fspeed = gps.f_speed_kmph();
   fcourse = gps.f_course();
+
+  struct LogEntry logEntry =
+      {
+          flat,
+          flon,
+          falt};
+
+  char test[100];
+
+  sprintf(test, "LAT:%.3f LON:%.3f ALT: %.3f",
+          logEntry.latitude,
+          logEntry.longitude,
+          logEntry.longitude);
+
+  Serial.println(test);
 
   String lat = flat == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(flat, 3);
   String lon = flon == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(flon, 3);
