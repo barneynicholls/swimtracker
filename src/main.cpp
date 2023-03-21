@@ -87,6 +87,28 @@ static String getTime(bool hasGPS)
   return String(display);
 }
 
+static String getDateTime(bool hasGPS)
+{
+  int year;
+  byte month, day, hour, minute, second, hundredths;
+  unsigned long age;
+  gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
+
+  if (!hasGPS)
+    return "no gps";
+
+  if (age == TinyGPS::GPS_INVALID_AGE)
+    return "invalid age";
+
+  //"0000-00-00T00:00:00";
+
+  char display[19];
+
+  sprintf(display, "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hour, minute, second);
+
+  return String(display);
+}
+
 static void smartdelay(unsigned long ms)
 {
   unsigned long start = millis();
@@ -174,21 +196,20 @@ void loop(void)
   float flat, flon, falt, fspeed, fcourse;
   unsigned long posAge;
   unsigned short uSats;
-  bool showGPS, showWifi;
+  bool showGPS, showWifi, wifiConnected;
 
   toggled = !toggled;
+  wifiConnected = WiFi.status() == WL_CONNECTED;
+  showWifi = toggled || wifiConnected;
 
-  uSats = gps.satellites();
-
-  showGPS = toggled || uSats != TinyGPS::GPS_INVALID_SATELLITES;
-  showWifi = toggled || WiFi.status() == WL_CONNECTED;
-
-  if (WiFi.status() == WL_CONNECTED)
+  if (wifiConnected)
   {
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
     server.handleClient();
   }
+
+  uSats = gps.satellites();
 
   gps.f_get_position(&flat, &flon, &posAge);
   falt = gps.f_altitude();
@@ -199,16 +220,27 @@ void loop(void)
       {
           flat,
           flon,
-          falt};
+          falt,
+          fcourse,
+          uSats};
+
+          
+  showGPS = toggled || uSats != TinyGPS::GPS_INVALID_SATELLITES;
 
   char test[100];
 
-  sprintf(test, "LAT:%.3f LON:%.3f ALT: %.3f",
+  String dateTime = getDateTime(showGPS);
+
+  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT: %.3f COURSE: %.3f SATS: %d",
+          dateTime.c_str(),
           logEntry.latitude,
           logEntry.longitude,
-          logEntry.longitude);
+          logEntry.altitude,
+          logEntry.course,
+          logEntry.satellites);
 
   Serial.println(test);
+
 
   String lat = flat == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(flat, 3);
   String lon = flon == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(flon, 3);

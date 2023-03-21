@@ -8,6 +8,8 @@ struct LogEntry
   float latitude;
   float longitude;
   float altitude;
+  float course;
+  unsigned short satellites;
 };
 
 #endif
