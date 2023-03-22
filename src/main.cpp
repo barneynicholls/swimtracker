@@ -31,7 +31,9 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
 // Swim Tracker
 #include "Logger.h"
 #include "LogEntry.h"
+#include "GPSLog.h"
 Logger logger;
+GPSLog gpsLog;
 
 // GPIO where the DS18B20 is connected to
 const int oneWireBus = 27;
@@ -68,47 +70,6 @@ void getData()
   dataFile.close();
 }
 
-static String getTime(bool hasGPS)
-{
-  int year;
-  byte month, day, hour, minute, second, hundredths;
-  unsigned long age;
-  gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
-
-  if (!hasGPS || age == TinyGPS::GPS_INVALID_AGE)
-  {
-    return toggled ? "--:--" : "00:00";
-  }
-
-  char display[5];
-
-  sprintf(display, "%02d:%02d", hour, minute);
-
-  return String(display);
-}
-
-static String getDateTime(bool hasGPS)
-{
-  int year;
-  byte month, day, hour, minute, second, hundredths;
-  unsigned long age;
-  gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
-
-  if (!hasGPS)
-    return "no gps";
-
-  if (age == TinyGPS::GPS_INVALID_AGE)
-    return "invalid age";
-
-  //"0000-00-00T00:00:00";
-
-  char display[19];
-
-  sprintf(display, "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hour, minute, second);
-
-  return String(display);
-}
-
 static void smartdelay(unsigned long ms)
 {
   unsigned long start = millis();
@@ -123,13 +84,6 @@ void handleRoot()
 {
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
-  // bool invalidTemp = temperatureC < -50 || temperatureC > 100;
-
-  // String temp = invalidTemp ? "--.-" : String(temperatureC, 1);
-  // temp.concat("c");
-  // digitalWrite(LED_BUILTIN, HIGH);
-  // server.send(200, "text/plain", temp);
-  // digitalWrite(LED_BUILTIN, LOW);
   char html[1000];
 
   sprintf(
@@ -193,9 +147,6 @@ void setup(void)
 
 void loop(void)
 {
-  float flat, flon, falt, fspeed, fcourse;
-  unsigned long posAge;
-  unsigned short uSats;
   bool showGPS, showWifi, wifiConnected;
 
   toggled = !toggled;
@@ -209,53 +160,25 @@ void loop(void)
     server.handleClient();
   }
 
-  uSats = gps.satellites();
+  LogEntry entry = gpsLog.createLogEntry(gps);
 
-  gps.f_get_position(&flat, &flon, &posAge);
-  falt = gps.f_altitude();
-  fspeed = gps.f_speed_kmph();
-  fcourse = gps.f_course();
+  showGPS = toggled || entry.satellites != TinyGPS::GPS_INVALID_SATELLITES;
 
-  struct LogEntry logEntry =
-      {
-          flat,
-          flon,
-          falt,
-          fcourse,
-          uSats};
-
-          
-  showGPS = toggled || uSats != TinyGPS::GPS_INVALID_SATELLITES;
-
-  char test[100];
-
-  String dateTime = getDateTime(showGPS);
-
-  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT: %.3f COURSE: %.3f SATS: %d",
-          dateTime.c_str(),
-          logEntry.latitude,
-          logEntry.longitude,
-          logEntry.altitude,
-          logEntry.course,
-          logEntry.satellites);
-
-  Serial.println(test);
-
-
-  String lat = flat == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(flat, 3);
-  String lon = flon == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(flon, 3);
-  String alt = falt == TinyGPS::GPS_INVALID_F_ALTITUDE ? "-" : String(falt, 1);
-  String speed = fspeed == TinyGPS::GPS_INVALID_F_SPEED ? "-" : String(fspeed, 1);
-  String course = fcourse == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : TinyGPS::cardinal(fcourse);
-  String sats = uSats == TinyGPS::GPS_INVALID_SATELLITES ? "-" : String(uSats);
-
-  String time = getTime(showGPS);
+  String lat = entry.latitude == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(entry.latitude, 3);
+  String lon = entry.longitude == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(entry.longitude, 3);
+  String alt = entry.altitude == TinyGPS::GPS_INVALID_F_ALTITUDE ? "-" : String(entry.altitude, 1);
+  String speed = entry.speed == TinyGPS::GPS_INVALID_F_SPEED ? "-" : String(entry.speed, 1);
+  String course = String(entry.cardinal);
+  String sats = entry.satellites == TinyGPS::GPS_INVALID_SATELLITES ? "-" : String(entry.satellites);
 
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
   bool invalidTemp = temperatureC < -50 || temperatureC > 100;
 
   String temp = invalidTemp ? "--.-" : String(temperatureC, 1);
+
+  entry.temperature = temperatureC;
+  logger.log(entry);
 
   u8g2.firstPage();
   do
@@ -288,7 +211,7 @@ void loop(void)
 
     // TIME u8g2_font_profont22_mf
     u8g2.setFont(u8g2_font_t0_18_mf);
-    u8g2.drawStr(0, 13, time.c_str());
+    u8g2.drawStr(0, 13, entry.time.c_str());
 
     // ICONS
     u8g2.setFont(u8g2_font_open_iconic_www_2x_t);
@@ -299,7 +222,25 @@ void loop(void)
 
   } while (u8g2.nextPage());
 
-  logger.log(flat, flon, falt, fspeed, fcourse, uSats, temperatureC);
+  
+  char test[150];
+
+  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f",
+          entry.dateTime.c_str(),
+          entry.latitude,
+          entry.longitude,
+          entry.altitude);
+
+  Serial.println(test);
+
+  sprintf(test, "COURSE:%.3f CARDINAL:%s SATS:%d TIME:%s TEMP:%.2f",
+          entry.course,
+          entry.cardinal.c_str(),
+          entry.satellites,
+          entry.time.c_str(),
+          entry.temperature);
+
+  Serial.println(test);
 
   smartdelay(2000);
 }

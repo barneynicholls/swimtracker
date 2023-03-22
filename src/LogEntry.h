@@ -5,11 +5,16 @@
 
 struct LogEntry
 {
+  String dateTime;
   float latitude;
   float longitude;
   float altitude;
+  float speed;
   float course;
+  String cardinal;
   unsigned short satellites;
+  String time;
+  float temperature;
 };
 
 #endif

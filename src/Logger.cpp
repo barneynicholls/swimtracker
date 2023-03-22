@@ -1,6 +1,9 @@
 #include "Logger.h"
+#include "LogEntry.h"
 
-void Logger::log(float lat, float lon, float alt, float kmh, float course, unsigned short sats, float temp)
+#include <TinyGPS.h>
+
+void Logger::log(LogEntry entry)
 {
     // TODO file name should be passed to constructor
     File file = SD.open("/data.txt", FILE_APPEND);
@@ -13,8 +16,9 @@ void Logger::log(float lat, float lon, float alt, float kmh, float course, unsig
     char line[100];
 
     sprintf(line,
-            "%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f",
-            lat, lon, alt, kmh, course, TinyGPS::cardinal(course), sats, temp);
+            "%s,%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f",
+            entry.dateTime.c_str(), entry.latitude, entry.longitude, entry.altitude, entry.speed,
+            entry.course, entry.cardinal.c_str(), entry.satellites, entry.temperature);
 
     if (file.println(line))
     {

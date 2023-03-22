@@ -9,10 +9,12 @@
 // GPS
 #include <TinyGPS.h>
 
+#include "LogEntry.h"
+
 class Logger
 {
 public:
-    void log(float lat, float lon, float alt, float kmh, float course, unsigned short sats, float temp);
+    void log(LogEntry entry);
 };
 
 #endif
