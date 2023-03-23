@@ -14,6 +14,9 @@
 class Logger
 {
 public:
+    void begin();
+    void deleteLog();
+    File getLog();
     void log(LogEntry entry);
 };
 

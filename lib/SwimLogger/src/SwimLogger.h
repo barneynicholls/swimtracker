@@ -3,11 +3,15 @@
 
 #include <TinyGPS.h>
 #include "LogEntry.h"
+#include "FS.h"
 
 class SwimLogger
 {
 public:
     LogEntry createLogEntry(TinyGPS gps, float temperature);
+    void deleteLog();
+    File getLog();
+    void begin();
 };
 
 #endif

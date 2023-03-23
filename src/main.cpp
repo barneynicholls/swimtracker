@@ -17,8 +17,6 @@ WebServer server(80);
 
 // SD CARD
 #include "FS.h"
-#include "SD.h"
-#include "SPI.h"
 
 // DISPLAY
 #include <SwimDisplay.h>
@@ -46,13 +44,14 @@ bool toggled = false;
 
 void deleteData()
 {
-  SD.remove("/data.txt");
+  // SD.remove("/data.txt");
+  swimLog.deleteLog();
   server.send(200, "text/plain", "Data File Deleted");
 }
 
 void getData()
 {
-  File dataFile = SD.open("/data.txt");
+  File dataFile = swimLog.getLog();
 
   if (!dataFile)
   {
@@ -125,8 +124,8 @@ void setup(void)
   // Start the OLED display
   display.begin();
 
-  // Start SD
-  SD.begin();
+  // Start the log
+  swimLog.begin();
 
   // wifi
   pinMode(LED_BUILTIN, OUTPUT);

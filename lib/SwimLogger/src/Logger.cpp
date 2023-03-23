@@ -1,12 +1,34 @@
 #include "Logger.h"
 #include "LogEntry.h"
 
+// SD CARD
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+
 #include <TinyGPS.h>
+
+const char logFile[] = "/data.txt";
+
+void Logger::begin()
+{
+    // Start SD
+    SD.begin();
+}
+
+void Logger::deleteLog()
+{
+    SD.remove(logFile);
+}
+
+File Logger::getLog()
+{
+    return SD.open(logFile);
+}
 
 void Logger::log(LogEntry entry)
 {
-    // TODO file name should be passed to constructor
-    File file = SD.open("/data.txt", FILE_APPEND);
+    File file = SD.open(logFile, FILE_APPEND);
     if (!file)
     {
         Serial.println("Failed to open file for appending");

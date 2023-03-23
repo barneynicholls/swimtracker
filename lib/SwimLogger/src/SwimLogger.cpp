@@ -1,8 +1,26 @@
 #include "SwimLogger.h"
 #include "Logger.h"
 #include "LogEntry.h"
+#include "FS.h"
 
 #include <TinyGPS.h>
+
+Logger logger;
+
+void SwimLogger::begin()
+{
+    logger.begin();
+}
+
+void SwimLogger::deleteLog()
+{
+    logger.deleteLog();
+}
+
+File SwimLogger::getLog()
+{
+    return logger.getLog();
+}
 
 LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
 {
@@ -23,7 +41,7 @@ LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
 
     String cardinal = course == TinyGPS::GPS_INVALID_F_ANGLE ? "" : TinyGPS::cardinal(course);
 
-    String dateTime,time;
+    String dateTime, time;
 
     if (age == TinyGPS::GPS_INVALID_AGE)
     {
@@ -53,6 +71,8 @@ LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
             time,
             temperature,
             age};
+
+    logger.log(logEntry);
 
     return logEntry;
 }
