@@ -1,10 +1,10 @@
-#include "GPSLog.h"
+#include "SwimLogger.h"
 #include "Logger.h"
 #include "LogEntry.h"
 
 #include <TinyGPS.h>
 
-LogEntry GPSLog::createLogEntry(TinyGPS gps)
+LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
 {
     float flat, flon, falt, fspeed, fcourse;
     unsigned long posAge;
@@ -52,7 +52,7 @@ LogEntry GPSLog::createLogEntry(TinyGPS gps)
             cardinal,
             uSats,
             time,
-            0};
+            temperature};
 
     return logEntry;
 }

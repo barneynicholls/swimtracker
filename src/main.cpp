@@ -20,6 +20,10 @@ WebServer server(80);
 #include "SD.h"
 #include "SPI.h"
 
+// DISPLAY
+#include <SwimDisplay.h>
+SwimDisplay display;
+
 // 128x32 OLED
 #include <U8g2lib.h>
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
@@ -29,11 +33,8 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
 #include <DallasTemperature.h>
 
 // Swim Tracker
-#include "Logger.h"
-#include "LogEntry.h"
-#include "GPSLog.h"
-Logger logger;
-GPSLog gpsLog;
+#include <SwimLogger.h>
+SwimLogger swimLog;
 
 // GPIO where the DS18B20 is connected to
 const int oneWireBus = 27;
@@ -160,7 +161,12 @@ void loop(void)
     server.handleClient();
   }
 
-  LogEntry entry = gpsLog.createLogEntry(gps);
+  sensors.requestTemperatures();
+  float temperatureC = sensors.getTempCByIndex(0);
+
+  LogEntry entry = swimLog.createLogEntry(gps, temperatureC);
+
+  display.update(entry);
 
   showGPS = toggled || entry.satellites != TinyGPS::GPS_INVALID_SATELLITES;
 
@@ -171,14 +177,9 @@ void loop(void)
   String course = String(entry.cardinal);
   String sats = entry.satellites == TinyGPS::GPS_INVALID_SATELLITES ? "-" : String(entry.satellites);
 
-  sensors.requestTemperatures();
-  float temperatureC = sensors.getTempCByIndex(0);
   bool invalidTemp = temperatureC < -50 || temperatureC > 100;
 
   String temp = invalidTemp ? "--.-" : String(temperatureC, 1);
-
-  entry.temperature = temperatureC;
-  logger.log(entry);
 
   u8g2.firstPage();
   do
@@ -222,8 +223,7 @@ void loop(void)
 
   } while (u8g2.nextPage());
 
-  
-  char test[150];
+    char test[150];
 
   sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f",
           entry.dateTime.c_str(),

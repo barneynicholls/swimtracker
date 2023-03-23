@@ -4,10 +4,10 @@
 #include <TinyGPS.h>
 #include "LogEntry.h"
 
-class GPSLog
+class SwimLogger
 {
 public:
-    LogEntry createLogEntry(TinyGPS gps);
+    LogEntry createLogEntry(TinyGPS gps, float temperature);
 };
 
 #endif
