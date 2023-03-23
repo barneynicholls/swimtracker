@@ -9,7 +9,8 @@
 class SwimDisplay
 {
 public:
-    void update(LogEntry entry);
+    void begin();
+    void update(LogEntry entry, bool wifiConnected, bool toggle);
 };
 
 #endif

@@ -6,23 +6,22 @@
 
 LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
 {
-    float flat, flon, falt, fspeed, fcourse;
-    unsigned long posAge;
-    unsigned short uSats;
+    float lat, lon, alt, speed, course;
+    unsigned long age;
+    unsigned short sats;
     int year;
     byte month, day, hour, minute, second, hundredths;
-    unsigned long age;
 
-    uSats = gps.satellites();
+    sats = gps.satellites();
 
-    gps.f_get_position(&flat, &flon, &posAge);
-    falt = gps.f_altitude();
-    fspeed = gps.f_speed_kmph();
-    fcourse = gps.f_course();
+    gps.f_get_position(&lat, &lon, &age);
+    alt = gps.f_altitude();
+    speed = gps.f_speed_kmph();
+    course = gps.f_course();
 
     gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
 
-    String cardinal = fcourse == TinyGPS::GPS_INVALID_F_ANGLE ? "" : TinyGPS::cardinal(fcourse);
+    String cardinal = course == TinyGPS::GPS_INVALID_F_ANGLE ? "" : TinyGPS::cardinal(course);
 
     String dateTime,time;
 
@@ -44,15 +43,16 @@ LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
     LogEntry logEntry =
         {
             dateTime,
-            flat,
-            flon,
-            falt,
-            fspeed,
-            fcourse,
+            lat,
+            lon,
+            alt,
+            speed,
+            course,
             cardinal,
-            uSats,
+            sats,
             time,
-            temperature};
+            temperature,
+            age};
 
     return logEntry;
 }

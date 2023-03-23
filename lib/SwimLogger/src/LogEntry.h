@@ -15,6 +15,7 @@ struct LogEntry
   unsigned short satellites;
   String time;
   float temperature;
+  unsigned long age;
 };
 
 #endif
