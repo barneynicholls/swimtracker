@@ -24,10 +24,6 @@ WebServer server(80);
 #include <SwimDisplay.h>
 SwimDisplay display;
 
-// 128x32 OLED
-#include <U8g2lib.h>
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
-
 // DS18B20 temperature sensor
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -127,7 +123,7 @@ void setup(void)
   sensors.begin();
 
   // Start the OLED display
-  u8g2.begin();
+  display.begin();
 
   // Start SD
   SD.begin();
@@ -148,11 +144,11 @@ void setup(void)
 
 void loop(void)
 {
-  bool showGPS, showWifi, wifiConnected;
-
   toggled = !toggled;
+
+  bool wifiConnected;
+
   wifiConnected = WiFi.status() == WL_CONNECTED;
-  showWifi = toggled || wifiConnected;
 
   if (wifiConnected)
   {
@@ -166,70 +162,16 @@ void loop(void)
 
   LogEntry entry = swimLog.createLogEntry(gps, temperatureC);
 
-  display.update(entry);
+  display.update(entry, wifiConnected, toggled);
 
-  showGPS = toggled || entry.satellites != TinyGPS::GPS_INVALID_SATELLITES;
+  char test[150];
 
-  String lat = entry.latitude == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(entry.latitude, 3);
-  String lon = entry.longitude == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(entry.longitude, 3);
-  String alt = entry.altitude == TinyGPS::GPS_INVALID_F_ALTITUDE ? "-" : String(entry.altitude, 1);
-  String speed = entry.speed == TinyGPS::GPS_INVALID_F_SPEED ? "-" : String(entry.speed, 1);
-  String course = String(entry.cardinal);
-  String sats = entry.satellites == TinyGPS::GPS_INVALID_SATELLITES ? "-" : String(entry.satellites);
-
-  bool invalidTemp = temperatureC < -50 || temperatureC > 100;
-
-  String temp = invalidTemp ? "--.-" : String(temperatureC, 1);
-
-  u8g2.firstPage();
-  do
-  {
-
-    u8g2.setFont(u8g2_font_logisoso34_tf);
-    u8g2.drawStr(0, 62, temp.c_str());
-
-    u8g2.setFont(u8g2_font_tom_thumb_4x6_mr);
-    u8g2.drawStr(0, 24, "TEMPERATURE C");
-
-    if (toggled)
-    {
-      u8g2.drawStr(94, 24, "LAT:");
-      u8g2.drawStr(94, 30, lat.c_str());
-      u8g2.drawStr(94, 40, "LON:");
-      u8g2.drawStr(94, 46, lon.c_str());
-      u8g2.drawStr(94, 56, "ALT:");
-      u8g2.drawStr(94, 64, alt.c_str());
-    }
-    else
-    {
-      u8g2.drawStr(94, 24, "KMH:");
-      u8g2.drawStr(94, 30, speed.c_str());
-      u8g2.drawStr(94, 40, "COURSE:");
-      u8g2.drawStr(94, 46, course.c_str());
-      u8g2.drawStr(94, 56, "SATS:");
-      u8g2.drawStr(94, 64, sats.c_str());
-    }
-
-    // TIME u8g2_font_profont22_mf
-    u8g2.setFont(u8g2_font_t0_18_mf);
-    u8g2.drawStr(0, 13, entry.time.c_str());
-
-    // ICONS
-    u8g2.setFont(u8g2_font_open_iconic_www_2x_t);
-    // GPPS-ARROW
-    u8g2.drawStr(94, 16, showGPS ? "F" : "");
-    // WIFI
-    u8g2.drawStr(112, 16, showWifi ? "Q" : "");
-
-  } while (u8g2.nextPage());
-
-    char test[150];
-
-  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f",
+  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f AGE:%lu",
           entry.dateTime.c_str(),
           entry.latitude,
           entry.longitude,
-          entry.altitude);
+          entry.altitude,
+          entry.age);
 
   Serial.println(test);
 
