@@ -8,13 +8,15 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
 // GPS
 #include <TinyGPS.h>
 
+bool toggled;
+
 void SwimDisplay::begin()
 {
     // Start the OLED display
     u8g2.begin();
 }
 
-void SwimDisplay::update(LogEntry entry, bool wifiConnected, bool toggle)
+void SwimDisplay::update(LogEntry entry, bool wifiConnected, bool recording)
 {
     String lat = entry.latitude == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(entry.latitude, 3);
     String lon = entry.longitude == TinyGPS::GPS_INVALID_F_ANGLE ? "-" : String(entry.longitude, 3);
@@ -27,17 +29,18 @@ void SwimDisplay::update(LogEntry entry, bool wifiConnected, bool toggle)
 
     String temp = invalidTemp ? "--.-" : String(entry.temperature, 1);
 
+    toggled = !toggled;
+
     u8g2.firstPage();
     do
     {
-
         u8g2.setFont(u8g2_font_logisoso34_tf);
         u8g2.drawStr(0, 62, temp.c_str());
 
         u8g2.setFont(u8g2_font_tom_thumb_4x6_mr);
         u8g2.drawStr(0, 24, "TEMPERATURE C");
 
-        if (toggle)
+        if (toggled)
         {
             u8g2.drawStr(94, 24, "LAT:");
             u8g2.drawStr(94, 30, lat.c_str());
@@ -63,10 +66,12 @@ void SwimDisplay::update(LogEntry entry, bool wifiConnected, bool toggle)
         // ICONS
         u8g2.setFont(u8g2_font_open_iconic_www_2x_t);
         // GPPS-ARROW
-        bool showGPS = toggle || entry.satellites != TinyGPS::GPS_INVALID_SATELLITES;
+        bool showGPS = toggled || entry.satellites != TinyGPS::GPS_INVALID_SATELLITES;
         u8g2.drawStr(94, 16, showGPS ? "F" : "");
         // WIFI
         u8g2.drawStr(112, 16, wifiConnected ? "Q" : "");
+        // RECORDING
+        u8g2.drawStr(76, 16, recording ? "A" : "");
 
     } while (u8g2.nextPage());
 }

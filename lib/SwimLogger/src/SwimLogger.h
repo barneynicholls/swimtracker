@@ -8,7 +8,7 @@
 class SwimLogger
 {
 public:
-    LogEntry createLogEntry(TinyGPS gps, float temperature);
+    LogEntry createLogEntry(TinyGPS gps, float temperature, bool recording);
     void deleteLog();
     File getLog();
     void begin();

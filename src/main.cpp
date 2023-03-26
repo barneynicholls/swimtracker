@@ -5,8 +5,14 @@
 TinyGPS gps;
 SoftwareSerial ss(26, 25);
 
-// WIFI
+// LEDS
 const int LED_BUILTIN = 2;
+const int LED_RECORDING = 32;
+
+// BUTTON
+const int BUTTON_REC = 35;
+
+// WIFI
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
@@ -40,11 +46,11 @@ OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 
 // globals
-bool toggled = false;
+bool recording = false;
+float temperature;
 
 void deleteData()
 {
-  // SD.remove("/data.txt");
   swimLog.deleteLog();
   server.send(200, "text/plain", "Data File Deleted");
 }
@@ -78,21 +84,18 @@ static void smartdelay(unsigned long ms)
 
 void handleRoot()
 {
-  sensors.requestTemperatures();
-  float temperatureC = sensors.getTempCByIndex(0);
   char html[1000];
 
   sprintf(
       html,
       "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css\" integrity=\"sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65\" crossorigin=\"anonymous\"><title>Swim Tracker</title><meta http-equiv=\"refresh\" content=\"10\"></head><body><h1>Swim Tracker</h1><h2>Current</h2><p>Temperature: %.1fc</p><h2>Archive</h2><p><a href='/data'>Retrieve Data</a></p><p><a href='/delete'>Delete Data</a></p></body></html>",
-      temperatureC);
+      temperature);
 
   server.send(200, "text/html", html);
 }
 
 void handleNotFound()
 {
-  digitalWrite(LED_BUILTIN, HIGH);
   String message = "File Not Found";
   message += "URI: ";
   message += server.uri();
@@ -106,7 +109,6 @@ void handleNotFound()
     message += " " + server.argName(i) + ": " + server.arg(i) + "n";
   }
   server.send(404, "text/plain", message);
-  digitalWrite(LED_BUILTIN, LOW);
 }
 
 // Setup
@@ -127,9 +129,16 @@ void setup(void)
   // Start the log
   swimLog.begin();
 
-  // wifi
+  // LEDS
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+  pinMode(LED_RECORDING, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+
+  // BUTTONS
+  pinMode(BUTTON_REC, INPUT);
+
+  // wifi
   WiFi.begin(ssid, password);
 
   // web server
@@ -143,11 +152,25 @@ void setup(void)
 
 void loop(void)
 {
-  toggled = !toggled;
-
   bool wifiConnected;
 
+  // read the state of the pushbutton value:
+  int buttonState = digitalRead(BUTTON_REC);
+
+  if (buttonState == HIGH)
+  {
+    recording = !recording;
+    digitalWrite(LED_RECORDING, recording ? HIGH : LOW);
+  }
+
+  sensors.requestTemperatures();
+  temperature = sensors.getTempCByIndex(0);
+
+  LogEntry entry = swimLog.createLogEntry(gps, temperature, recording);
+
   wifiConnected = WiFi.status() == WL_CONNECTED;
+
+  display.update(entry, wifiConnected, recording);
 
   if (wifiConnected)
   {
@@ -156,21 +179,15 @@ void loop(void)
     server.handleClient();
   }
 
-  sensors.requestTemperatures();
-  float temperatureC = sensors.getTempCByIndex(0);
-
-  LogEntry entry = swimLog.createLogEntry(gps, temperatureC);
-
-  display.update(entry, wifiConnected, toggled);
-
   char test[150];
 
-  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f AGE:%lu",
+  sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f AGE:%lu, REC:%i",
           entry.dateTime.c_str(),
           entry.latitude,
           entry.longitude,
           entry.altitude,
-          entry.age);
+          entry.age,
+          entry.recording ? 1 : 0);
 
   Serial.println(test);
 

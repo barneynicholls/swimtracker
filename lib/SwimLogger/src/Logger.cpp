@@ -38,9 +38,10 @@ void Logger::log(LogEntry entry)
     char line[100];
 
     sprintf(line,
-            "%s,%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f",
+            "%s,%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f,%i",
             entry.dateTime.c_str(), entry.latitude, entry.longitude, entry.altitude, entry.speed,
-            entry.course, entry.cardinal.c_str(), entry.satellites, entry.temperature);
+            entry.course, entry.cardinal.c_str(), entry.satellites, entry.temperature,
+            entry.recording ? 1 : 0);
 
     if (file.println(line))
     {

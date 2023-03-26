@@ -22,7 +22,7 @@ File SwimLogger::getLog()
     return logger.getLog();
 }
 
-LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
+LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature, bool recording)
 {
     float lat, lon, alt, speed, course;
     unsigned long age;
@@ -70,7 +70,8 @@ LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature)
             sats,
             time,
             temperature,
-            age};
+            age,
+            recording};
 
     logger.log(logEntry);
 

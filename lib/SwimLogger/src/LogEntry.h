@@ -16,6 +16,7 @@ struct LogEntry
   String time;
   float temperature;
   unsigned long age;
+  bool recording;
 };
 
 #endif
