@@ -27,6 +27,8 @@ void SwimDisplay::update(LogEntry entry, bool wifiConnected, bool recording)
 
     bool invalidTemp = entry.temperature < -50 || entry.temperature > 100;
 
+    bool hasGPS = entry.latitude != TinyGPS::GPS_INVALID_F_ANGLE;
+
     String temp = invalidTemp ? "--.-" : String(entry.temperature, 1);
 
     toggled = !toggled;
@@ -40,7 +42,7 @@ void SwimDisplay::update(LogEntry entry, bool wifiConnected, bool recording)
         u8g2.setFont(u8g2_font_tom_thumb_4x6_mr);
         u8g2.drawStr(0, 24, "TEMPERATURE C");
 
-        if (toggled)
+        if (toggled || (!toggled && !hasGPS))
         {
             u8g2.drawStr(94, 24, "LAT:");
             u8g2.drawStr(94, 30, lat.c_str());
