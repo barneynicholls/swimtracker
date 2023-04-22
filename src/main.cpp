@@ -1,9 +1,11 @@
+#include "secrets.h"
+
 // GPS
 #include <SoftwareSerial.h>
 #include <TinyGPS.h>
 
 TinyGPS gps;
-SoftwareSerial ss(26, 25);
+SoftwareSerial ss(25, 26);
 
 // LEDS
 const int LED_BUILTIN = 2;
@@ -17,8 +19,8 @@ const int BUTTON_REC = 35;
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-const char *ssid = "Seareach";
-const char *password = "seareach";
+const char *ssid = SECRET_SSID;
+const char *password = SECRET_PASS;
 WebServer server(80);
 
 // SD CARD
@@ -126,7 +128,7 @@ void setup(void)
   // Start the OLED display
   display.begin();
 
-  // Start the log
+  // // Start the log
   swimLog.begin();
 
   // LEDS
@@ -152,6 +154,11 @@ void setup(void)
 
 void loop(void)
 {
+  sensors.requestTemperatures();
+  float tempReading = sensors.getTempCByIndex(0);
+
+  LogEntry entry = swimLog.createLogEntry(gps, tempReading, recording);
+
   bool wifiConnected;
 
   // read the state of the pushbutton value:
@@ -163,14 +170,10 @@ void loop(void)
     digitalWrite(LED_RECORDING, recording ? HIGH : LOW);
   }
 
-  sensors.requestTemperatures();
-  temperature = sensors.getTempCByIndex(0);
-
-  LogEntry entry = swimLog.createLogEntry(gps, temperature, recording);
 
   wifiConnected = WiFi.status() == WL_CONNECTED;
 
-  display.update(entry, wifiConnected, recording);
+  //display.update(entry, wifiConnected, recording);
 
   if (wifiConnected)
   {
