@@ -1,5 +1,12 @@
 #include "secrets.h"
 
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+//Adafruit_SSD1306 display = Adafruit_SSD1306(128, 64);
+
 // GPS
 #include <SoftwareSerial.h>
 #include <TinyGPS.h>
@@ -19,6 +26,10 @@ const int BUTTON_REC = 35;
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
+#include <basicOTA.h>
+
 const char *ssid = SECRET_SSID;
 const char *password = SECRET_PASS;
 WebServer server(80);
@@ -27,8 +38,8 @@ WebServer server(80);
 #include "FS.h"
 
 // DISPLAY
-#include <SwimDisplay.h>
-SwimDisplay display;
+// #include <SwimDisplay.h>
+// SwimDisplay displayOld;
 
 // DS18B20 temperature sensor
 #include <OneWire.h>
@@ -119,6 +130,18 @@ void setup(void)
   // Start the serial for debug
   Serial.begin(115200);
 
+  // initialize the SSD1306 OLED display with I2C address = 0x3D
+  // display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+
+  // clear the display buffer.
+  // display.clearDisplay();
+
+  // display.setTextSize(1);             // text size = 1
+  // display.setTextColor(WHITE, BLACK); // set text color to white and black background
+  // display.setCursor(0, 0);            // move cursor to position (13, 0) pixel
+  // display.print("TEMPERATURE:");
+  // display.display(); // update the display
+
   // Start GPS serial
   ss.begin(9600);
 
@@ -126,7 +149,7 @@ void setup(void)
   sensors.begin();
 
   // Start the OLED display
-  display.begin();
+  // display.begin();
 
   // // Start the log
   swimLog.begin();
@@ -150,6 +173,9 @@ void setup(void)
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("HTTP server started");
+
+  // Setup Firmware update over the air (OTA)
+  setup_OTA();
 }
 
 void loop(void)
@@ -158,8 +184,6 @@ void loop(void)
   float tempReading = sensors.getTempCByIndex(0);
 
   LogEntry entry = swimLog.createLogEntry(gps, tempReading, recording);
-
-  bool wifiConnected;
 
   // read the state of the pushbutton value:
   int buttonState = digitalRead(BUTTON_REC);
@@ -170,19 +194,32 @@ void loop(void)
     digitalWrite(LED_RECORDING, recording ? HIGH : LOW);
   }
 
+  bool wifiConnected = WiFi.status() == WL_CONNECTED;
 
-  wifiConnected = WiFi.status() == WL_CONNECTED;
+  // // display.update(entry, wifiConnected, recording);
 
-  //display.update(entry, wifiConnected, recording);
+  // // String temp = String(tempReading, 1);
+  // // display.setCursor(0, 13);
+  // // display.setTextSize(5);
+  // // display.print(temp);
 
   if (wifiConnected)
   {
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+
+    // display.setCursor(1, 55);
+    // display.setTextSize(1);
+    // display.print(WiFi.localIP());
+
     server.handleClient();
+    // Check for OTA updates
+    ArduinoOTA.handle();
   }
 
-  char test[150];
+  // // display.display();
+
+  char test[200];
 
   sprintf(test, "DATE:%s LAT:%.3f LON:%.3f ALT:%.3f AGE:%lu, REC:%i",
           entry.dateTime.c_str(),

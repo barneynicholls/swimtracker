@@ -35,10 +35,10 @@ void Logger::log(LogEntry entry)
         return;
     }
 
-    char line[100];
+    char line[200];
 
     sprintf(line,
-            "%s,%.4f,%.4f,%.2f,%.2f,%.3f,%s,%i,%.2f,%i",
+            "{ \"date\":\"%s\",\"lat\":\"%f\",\"lon\":\"%f\",\"alt\":\"%.2f\",\"kmh\":\"%.2f\",\"course\":\"%.3f\",\"cardinal\":\"%s\",\"sats\":\"%i\",\"temp\":\"%.2f\",\"recording\":\"%i\"}",
             entry.dateTime.c_str(), entry.latitude, entry.longitude, entry.altitude, entry.speed,
             entry.course, entry.cardinal.c_str(), entry.satellites, entry.temperature,
             entry.recording ? 1 : 0);
