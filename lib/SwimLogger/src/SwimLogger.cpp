@@ -24,7 +24,7 @@ File SwimLogger::getLog()
 
 LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature, bool recording)
 {
-    float lat, lon, alt, speed, course;
+    float lat, lng, alt, speed, course;
     unsigned long age;
     unsigned short sats;
     int year;
@@ -32,7 +32,7 @@ LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature, bool recordi
 
     sats = gps.satellites();
 
-    gps.f_get_position(&lat, &lon, &age);
+    gps.f_get_position(&lat, &lng, &age);
     alt = gps.f_altitude();
     speed = gps.f_speed_kmph();
     course = gps.f_course();
@@ -62,7 +62,7 @@ LogEntry SwimLogger::createLogEntry(TinyGPS gps, float temperature, bool recordi
         {
             dateTime,
             lat,
-            lon,
+            lng,
             alt,
             speed,
             course,

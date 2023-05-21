@@ -38,7 +38,7 @@ void Logger::log(LogEntry entry)
     char line[200];
 
     sprintf(line,
-            "{ \"date\":\"%s\",\"lat\":\"%f\",\"lon\":\"%f\",\"alt\":\"%.2f\",\"kmh\":\"%.2f\",\"course\":\"%.3f\",\"cardinal\":\"%s\",\"sats\":\"%i\",\"temp\":\"%.2f\",\"recording\":\"%i\"}",
+            "{ \"date\":\"%s\",\"lat\":%f,\"lng\":%f,\"alt\":%.2f,\"kmh\":%.2f,\"course\":%.3f,\"cardinal\":\"%s\",\"sats\":%i,\"temp\":%.2f,\"recording\":%i}",
             entry.dateTime.c_str(), entry.latitude, entry.longitude, entry.altitude, entry.speed,
             entry.course, entry.cardinal.c_str(), entry.satellites, entry.temperature,
             entry.recording ? 1 : 0);
