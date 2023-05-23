@@ -5,3 +5,26 @@
 :root {
   --bs-body-bg: var(--bs-gray-100);
 }
+
+.map {
+  height: 600px;
+  width: 100%;
+}
+
+@media only screen and (max-height: 667px) {
+  .map {
+    height: 270px;
+  }
+}
+
+@media only screen and (min-height: 740px) {
+  .map {
+    height: 340px;
+  }
+}
+
+@media only screen and (min-height: 896px) {
+  .map {
+    height: 470px;
+  }
+}

@@ -1,0 +1,55 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -4.974884,
+                    50.17933
+                ]
+            },
+            "properties": {
+                "country_code": "gb",
+                "housenumber": "8",
+                "street": "The Quay",
+                "country": "United Kingdom",
+                "county": "Cornwall",
+                "datasource": {
+                    "sourcename": "openstreetmap",
+                    "attribution": "© OpenStreetMap contributors",
+                    "license": "Open Database License",
+                    "url": "https://www.openstreetmap.org/copyright"
+                },
+                "postcode": "TR2 5HF",
+                "state": "England",
+                "district": "Gerrans",
+                "city": "Gerrans",
+                "lon": -4.974884,
+                "lat": 50.17933,
+                "state_code": "ENG",
+                "distance": 101.83620885944491,
+                "result_type": "building",
+                "name": "Spindrift Gallery",
+                "formatted": "Spindrift Gallery, 8 The Quay, Gerrans, TR2 5HF, United Kingdom",
+                "address_line1": "Spindrift Gallery",
+                "address_line2": "8 The Quay, Gerrans, TR2 5HF, United Kingdom",
+                "county_code": "CON",
+                "timezone": {
+                    "name": "Europe/London",
+                    "offset_STD": "+00:00",
+                    "offset_STD_seconds": 0,
+                    "offset_DST": "+01:00",
+                    "offset_DST_seconds": 3600,
+                    "abbreviation_STD": "GMT",
+                    "abbreviation_DST": "BST"
+                },
+                "rank": {
+                    "popularity": 3.94878066080517
+                },
+                "place_id": "511d93c5fd47e613c05989981249f4164940f00103f901d8ec2ad100000000c002039203115370696e64726966742047616c6c657279e203256f70656e7374726565746d61703a616464726573733a6e6f64652f33353039323531323838"
+            }
+        }
+    ]
+}

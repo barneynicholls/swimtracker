@@ -1,0 +1,503 @@
+{
+    "plus_code" : {
+       "compound_code" : "52HG+MJM Truro, UK",
+       "global_code" : "9C2Q52HG+MJM"
+    },
+    "results" : [
+       {
+          "address_components" : [
+             {
+                "long_name" : "26A",
+                "short_name" : "26A",
+                "types" : [ "street_number" ]
+             },
+             {
+                "long_name" : "The Lugger",
+                "short_name" : "The Lugger",
+                "types" : [ "route" ]
+             },
+             {
+                "long_name" : "Portscatho",
+                "short_name" : "Portscatho",
+                "types" : [ "locality", "political" ]
+             },
+             {
+                "long_name" : "Truro",
+                "short_name" : "Truro",
+                "types" : [ "postal_town" ]
+             },
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             },
+             {
+                "long_name" : "TR2 5HE",
+                "short_name" : "TR2 5HE",
+                "types" : [ "postal_code" ]
+             }
+          ],
+          "formatted_address" : "26A The Lugger, Portscatho, Truro TR2 5HE, UK",
+          "geometry" : {
+             "location" : {
+                "lat" : 50.1787204,
+                "lng" : -4.9734497
+             },
+             "location_type" : "ROOFTOP",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.18006938029149,
+                   "lng" : -4.972100719708498
+                },
+                "southwest" : {
+                   "lat" : 50.1773714197085,
+                   "lng" : -4.974798680291502
+                }
+             }
+          },
+          "place_id" : "ChIJPUBWP74-a0gRCZ-axR9_ZAQ",
+          "plus_code" : {
+             "compound_code" : "52HG+FJ Truro, UK",
+             "global_code" : "9C2Q52HG+FJ"
+          },
+          "types" : [ "street_address" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "12",
+                "short_name" : "12",
+                "types" : [ "street_number" ]
+             },
+             {
+                "long_name" : "The Lugger",
+                "short_name" : "The Lugger",
+                "types" : [ "route" ]
+             },
+             {
+                "long_name" : "Portscatho",
+                "short_name" : "Portscatho",
+                "types" : [ "locality", "political" ]
+             },
+             {
+                "long_name" : "Truro",
+                "short_name" : "Truro",
+                "types" : [ "postal_town" ]
+             },
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             },
+             {
+                "long_name" : "TR2 5HE",
+                "short_name" : "TR2 5HE",
+                "types" : [ "postal_code" ]
+             }
+          ],
+          "formatted_address" : "12 The Lugger, Portscatho, Truro TR2 5HE, UK",
+          "geometry" : {
+             "bounds" : {
+                "northeast" : {
+                   "lat" : 50.1788191,
+                   "lng" : -4.9737854
+                },
+                "southwest" : {
+                   "lat" : 50.1787313,
+                   "lng" : -4.9739128
+                }
+             },
+             "location" : {
+                "lat" : 50.1787802,
+                "lng" : -4.9738456
+             },
+             "location_type" : "ROOFTOP",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.18012418029149,
+                   "lng" : -4.972500119708498
+                },
+                "southwest" : {
+                   "lat" : 50.17742621970849,
+                   "lng" : -4.975198080291503
+                }
+             }
+          },
+          "place_id" : "ChIJsexcFb4-a0gRoeFfBq89c-U",
+          "types" : [ "premise" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "10",
+                "short_name" : "10",
+                "types" : [ "street_number" ]
+             },
+             {
+                "long_name" : "The Lugger",
+                "short_name" : "The Lugger",
+                "types" : [ "route" ]
+             },
+             {
+                "long_name" : "Portscatho",
+                "short_name" : "Portscatho",
+                "types" : [ "locality", "political" ]
+             },
+             {
+                "long_name" : "Truro",
+                "short_name" : "Truro",
+                "types" : [ "postal_town" ]
+             },
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             },
+             {
+                "long_name" : "TR2 5HE",
+                "short_name" : "TR2 5HE",
+                "types" : [ "postal_code" ]
+             }
+          ],
+          "formatted_address" : "Porthgate, 10 The Lugger, Portscatho, Truro TR2 5HE, UK",
+          "geometry" : {
+             "location" : {
+                "lat" : 50.178832,
+                "lng" : -4.974076999999999
+             },
+             "location_type" : "ROOFTOP",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.1801809802915,
+                   "lng" : -4.972728019708497
+                },
+                "southwest" : {
+                   "lat" : 50.1774830197085,
+                   "lng" : -4.975425980291502
+                }
+             }
+          },
+          "place_id" : "ChIJuZAIFb4-a0gRSc5t4ri-0RE",
+          "plus_code" : {
+             "compound_code" : "52HG+G9 Truro, UK",
+             "global_code" : "9C2Q52HG+G9"
+          },
+          "types" : [ "establishment", "lodging", "point_of_interest" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "52HG+MJ",
+                "short_name" : "52HG+MJ",
+                "types" : [ "plus_code" ]
+             },
+             {
+                "long_name" : "Truro",
+                "short_name" : "Truro",
+                "types" : [ "postal_town" ]
+             },
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             }
+          ],
+          "formatted_address" : "52HG+MJ Truro, UK",
+          "geometry" : {
+             "bounds" : {
+                "northeast" : {
+                   "lat" : 50.17925,
+                   "lng" : -4.973375
+                },
+                "southwest" : {
+                   "lat" : 50.17912500000001,
+                   "lng" : -4.9735
+                }
+             },
+             "location" : {
+                "lat" : 50.179211,
+                "lng" : -4.973466
+             },
+             "location_type" : "GEOMETRIC_CENTER",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.1805364802915,
+                   "lng" : -4.972088519708498
+                },
+                "southwest" : {
+                   "lat" : 50.1778385197085,
+                   "lng" : -4.974786480291502
+                }
+             }
+          },
+          "place_id" : "GhIJrgrUYvAWSUARXhJnRdTkE8A",
+          "plus_code" : {
+             "compound_code" : "52HG+MJ Truro, UK",
+             "global_code" : "9C2Q52HG+MJ"
+          },
+          "types" : [ "plus_code" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "26",
+                "short_name" : "26",
+                "types" : [ "street_number" ]
+             },
+             {
+                "long_name" : "The Lugger",
+                "short_name" : "The Lugger",
+                "types" : [ "route" ]
+             },
+             {
+                "long_name" : "Portscatho",
+                "short_name" : "Portscatho",
+                "types" : [ "locality", "political" ]
+             },
+             {
+                "long_name" : "Truro",
+                "short_name" : "Truro",
+                "types" : [ "postal_town" ]
+             },
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             },
+             {
+                "long_name" : "TR2 5HE",
+                "short_name" : "TR2 5HE",
+                "types" : [ "postal_code" ]
+             }
+          ],
+          "formatted_address" : "26 The Lugger, Portscatho, Truro TR2 5HE, UK",
+          "geometry" : {
+             "bounds" : {
+                "northeast" : {
+                   "lat" : 50.1788807,
+                   "lng" : -4.9721098
+                },
+                "southwest" : {
+                   "lat" : 50.1787417,
+                   "lng" : -4.9735241
+                }
+             },
+             "location" : {
+                "lat" : 50.1788684,
+                "lng" : -4.972809799999999
+             },
+             "location_type" : "GEOMETRIC_CENTER",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.18016018029149,
+                   "lng" : -4.971467969708497
+                },
+                "southwest" : {
+                   "lat" : 50.1774622197085,
+                   "lng" : -4.974165930291502
+                }
+             }
+          },
+          "place_id" : "ChIJcTgxNr4-a0gRPjKVYQvChmw",
+          "types" : [ "route" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "Gerrans",
+                "short_name" : "Gerrans",
+                "types" : [ "administrative_area_level_4", "political" ]
+             },
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             },
+             {
+                "long_name" : "TR2",
+                "short_name" : "TR2",
+                "types" : [ "postal_code", "postal_code_prefix" ]
+             }
+          ],
+          "formatted_address" : "Gerrans TR2, UK",
+          "geometry" : {
+             "bounds" : {
+                "northeast" : {
+                   "lat" : 50.2110405,
+                   "lng" : -4.950872899999999
+                },
+                "southwest" : {
+                   "lat" : 50.13905,
+                   "lng" : -5.0182384
+                }
+             },
+             "location" : {
+                "lat" : 50.1742789,
+                "lng" : -4.986945
+             },
+             "location_type" : "APPROXIMATE",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.2110405,
+                   "lng" : -4.950872899999999
+                },
+                "southwest" : {
+                   "lat" : 50.13905,
+                   "lng" : -5.0182384
+                }
+             }
+          },
+          "place_id" : "ChIJtSgqm6M-a0gRtReGXB0mqKI",
+          "types" : [ "administrative_area_level_4", "political" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "Cornwall",
+                "short_name" : "Cornwall",
+                "types" : [ "administrative_area_level_2", "political" ]
+             },
+             {
+                "long_name" : "England",
+                "short_name" : "England",
+                "types" : [ "administrative_area_level_1", "political" ]
+             },
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             }
+          ],
+          "formatted_address" : "Cornwall, UK",
+          "geometry" : {
+             "bounds" : {
+                "northeast" : {
+                   "lat" : 50.93127,
+                   "lng" : -4.1649445
+                },
+                "southwest" : {
+                   "lat" : 49.9554143,
+                   "lng" : -5.747107
+                }
+             },
+             "location" : {
+                "lat" : 50.26604709999999,
+                "lng" : -5.0527125
+             },
+             "location_type" : "APPROXIMATE",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 50.93127,
+                   "lng" : -4.1649445
+                },
+                "southwest" : {
+                   "lat" : 49.9554143,
+                   "lng" : -5.747107
+                }
+             }
+          },
+          "place_id" : "ChIJyQ4nv_C3akgRcUVL2YU8Qm4",
+          "types" : [ "administrative_area_level_2", "political" ]
+       },
+       {
+          "address_components" : [
+             {
+                "long_name" : "United Kingdom",
+                "short_name" : "GB",
+                "types" : [ "country", "political" ]
+             }
+          ],
+          "formatted_address" : "United Kingdom",
+          "geometry" : {
+             "bounds" : {
+                "northeast" : {
+                   "lat" : 60.91569999999999,
+                   "lng" : 33.9165549
+                },
+                "southwest" : {
+                   "lat" : 34.5614,
+                   "lng" : -8.8988999
+                }
+             },
+             "location" : {
+                "lat" : 55.378051,
+                "lng" : -3.435973
+             },
+             "location_type" : "APPROXIMATE",
+             "viewport" : {
+                "northeast" : {
+                   "lat" : 60.91569999999999,
+                   "lng" : 33.9165549
+                },
+                "southwest" : {
+                   "lat" : 34.5614,
+                   "lng" : -8.8988999
+                }
+             }
+          },
+          "place_id" : "ChIJqZHHQhE7WgIReiWIMkOg-MQ",
+          "types" : [ "country", "political" ]
+       }
+    ],
+    "status" : "OK"
+ }
