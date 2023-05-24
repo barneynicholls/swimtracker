@@ -1,9 +1,4 @@
-let map;
-
-let maps = [];
-
-
-function getData() {
+async function getData() {
 
     fetch('./swim.json')
         .then((response) => {
@@ -77,7 +72,7 @@ async function showSwims(swims) {
         flightPath.setMap(map);
         zoomToObject(flightPath, map);
 
-        const stats = getSwimStats(swim);
+        const stats = await getSwimStats(swim);
 
         const avgTemp = card.querySelector('[data-id="avgTemp"]');
         avgTemp.innerHTML = stats.avgTemp.toString();
@@ -103,15 +98,76 @@ async function showSwims(swims) {
         const speed = card.querySelector('[data-id="speed"]');
         speed.innerHTML = stats.kmh.toString();
 
+        const address = card.querySelector('[data-id="address"]');
+        address.innerHTML = stats.address;
+
+        const temp = card.querySelector('[data-id="temp"]');
+        temp.innerHTML = stats.weather.temp;
+
+        const feelslike = card.querySelector('[data-id="feelslike"]');
+        feelslike.innerHTML = stats.weather.feelslike;
+
+        const winddir = card.querySelector('[data-id="winddir"]');
+        winddir.innerHTML = degToCompass(stats.weather.winddir);
+
+        const windspeed = card.querySelector('[data-id="windspeed"]');
+        windspeed.innerHTML = stats.weather.windspeed;
+
+        const windgust = card.querySelector('[data-id="windgust"]');
+        windgust.innerHTML = stats.weather.windgust;
+
+        const conditions = card.querySelector('[data-id="conditions"]');
+        conditions.innerHTML = stats.weather.conditions;
+
+        const humidity = card.querySelector('[data-id="humidity"]');
+        humidity.innerHTML = stats.weather.humidity;
+
+        const icon = card.querySelector('[data-id="icon"]');
+        icon.setAttribute('class', getIcon(stats.weather.icon));
+
         swimContainer.appendChild(card);
     }
 }
 
-
+function getIcon(icon) {
+    let bsIcon = "bi bi-";
+    switch (icon) {
+        case 'snow':
+            bsIcon += 'cloud-snow';
+            break;
+        case 'rain':
+            bsIcon += 'cloud-rain';
+            break;
+        case 'fog':
+            bsIcon += 'cloud-fog';
+            break;
+        case 'wind':
+            bsIcon += 'wind';
+            break;
+        case 'cloudy':
+            bsIcon += 'cloudy';
+            break;
+        case 'partly-cloudy-day':
+            bsIcon += 'cloud-sun';
+            break;
+        case 'partly-cloudy-night':
+            bsIcon += 'cloud-moon';
+            break;
+        case 'clear-day':
+            bsIcon += 'sun';
+            break;
+        case 'clear-night':
+            bsIcon += 'moon';
+            break;
+        default:
+            bsIcon += 'rainbow';
+    }
+    return bsIcon;
+}
 
 async function initMap() {
     //@ts-ignore
-    getData();
+    await getData();
 }
 
 function zoomToObject(obj, map) {
@@ -145,7 +201,7 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-function getSwimStats(swim) {
+async function getSwimStats(swim) {
     let sumTemp = 0;
     let minTemp = 1000;
     let maxTemp = -1000;
@@ -187,10 +243,13 @@ function getSwimStats(swim) {
 
     const seconds = dayjs.duration(end.diff(start)).asSeconds();
 
-    
     const mps = distance / seconds;
     const kmh = (mps * 3.6).toFixed(1);
-    
+
+    const address = await getAddress(first.lat, first.lng);
+
+    const weather = await getWeather(first);
+
     return {
         minTemp,
         maxTemp,
@@ -199,8 +258,57 @@ function getSwimStats(swim) {
         distance,
         when,
         time,
-        kmh
+        kmh,
+        address,
+        weather
     }
+
+}
+
+async function getWeather(record) {
+    const url = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/' + record.lat.toString() + ',' + record.lng.toString() + '/' + record.created + '?key=' + apiKeys.visualCrossing + '&include=current&unitGroup=metric';
+    const result = await fetch(url)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+
+            const day = data.days[0];
+
+            return {
+                "conditions": day.conditions,
+                "temp": day.temp,
+                "feelslike": day.feelslike,
+                "humidity": day.humidity,
+                "windspeed": day.windspeed,
+                "windgust": day.windgust,
+                "winddir": day.winddir,
+                "icon": day.icon
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    return result;
+}
+
+async function getAddress(lat, lng) {
+
+    const url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat.toString() + ',' + lng.toString() + '&result_type=locality|political&key=' + apiKeys.google;
+
+    const result = await fetch(url)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            return data.results[0].formatted_address;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    return result;
 }
 
 function addSwim(swim) {
@@ -264,7 +372,7 @@ function addSwim(swim) {
     a.setAttribute("aria-current", "true");
 
     const img = document.createElement("img");
-    img.src = "https://maps.googleapis.com/maps/api/staticmap?size=100x100&maptype=hybrid&path=color:0xff0000|weight:5" + coords + "&key=" + config.gmaps;
+    img.src = "https://maps.googleapis.com/maps/api/staticmap?size=100x100&maptype=hybrid&path=color:0xff0000|weight:5" + coords + "&key=" + apiKeys.google;
     img.setAttribute("alt", "twbs");
     img.setAttribute("width", "100");
     img.setAttribute("height", "100");
@@ -283,7 +391,7 @@ function addSwim(swim) {
 
     details.appendChild(title);
 
-    fetch('https://maps.googleapis.com/maps/api/geocode/json?latlng=50.179211,-4.973466&result_type=locality|political&key=' + config.gmaps)
+    fetch('https://maps.googleapis.com/maps/api/geocode/json?latlng=50.179211,-4.973466&result_type=locality|political&key=' + apiKeys.google)
         .then((response) => {
             return response.json();
         })
