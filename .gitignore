@@ -4,4 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 src/secrets.h
-src/web/config.json
+src/web/config.js
