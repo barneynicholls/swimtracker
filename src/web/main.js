@@ -94,6 +94,15 @@ async function showSwims(swims) {
         const distance = card.querySelector('[data-id="distance"]');
         distance.innerHTML = stats.distance.toString();
 
+        const when = card.querySelector('[data-id="when"]');
+        when.innerHTML = stats.when.toString();
+
+        const time = card.querySelector('[data-id="time"]');
+        time.innerHTML = stats.time.toString();
+
+        const speed = card.querySelector('[data-id="speed"]');
+        speed.innerHTML = stats.kmh.toString();
+
         swimContainer.appendChild(card);
     }
 }
@@ -136,7 +145,7 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-function getSwimStats(swim){
+function getSwimStats(swim) {
     let sumTemp = 0;
     let minTemp = 1000;
     let maxTemp = -1000;
@@ -163,16 +172,34 @@ function getSwimStats(swim){
     distance = distance.toFixed(0);
     minTemp = minTemp.toFixed(1);
     maxTemp = maxTemp.toFixed(1);
-    let rngTemp = (maxTemp - minTemp).toFixed(1);
 
+    const rngTemp = (maxTemp - minTemp).toFixed(1);
     const avgTemp = (sumTemp / swim.length).toFixed(1);
 
+    const first = swim[0];
+    const last = swim[swim.length - 1];
+
+    const start = dayjs(first.created);
+    const end = dayjs(last.created);
+
+    const when = start.fromNow();
+    const time = start.to(end, true);
+
+    const seconds = dayjs.duration(end.diff(start)).asSeconds();
+
+    
+    const mps = distance / seconds;
+    const kmh = (mps * 3.6).toFixed(1);
+    
     return {
         minTemp,
         maxTemp,
         avgTemp,
         rngTemp,
         distance,
+        when,
+        time,
+        kmh
     }
 }
 

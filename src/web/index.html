@@ -61,10 +61,10 @@
   <div class="container my-5">
     <div class="col-lg-12 px-0">
       <div id="swims">
-        
+
       </div>
 
- 
+
       <div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
         <div class="list-group" id="swim-list">
 
@@ -87,7 +87,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <!-- prettier-ignore -->
   <script>
-  (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+    (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
       ({ key: config.gmaps, v: "weekly" });</script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
@@ -95,16 +95,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"
     integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/plugin/relativeTime.min.js"
+  <script>dayjs().format()</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/plugin/relativeTime.min.js"
     integrity="sha512-MVzDPmm7QZ8PhEiqJXKz/zw2HJuv61waxb8XXuZMMs9b+an3LoqOqhOEt5Nq3LY1e4Ipbbd/e+AWgERdHlVgaA=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-    <script src="main.js"></script>
+  <script>
+    dayjs.extend(window.dayjs_plugin_relativeTime)
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/plugin/duration.min.js" integrity="sha512-QxVJ3lAILV0RSq3wPNV5CFNyyywxd5QfA9jfGfzVViwpL/eWSi5dR1nZMc02c+QE4xz2L1eQvx/fn18RrUq9lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    dayjs.extend(window.dayjs_plugin_duration)
+  </script>
+
+  <script src="main.js"></script>
 
   <template id="mapTmpl">
     <div class="card mb-3">
       <div data-id="map" class="card-img-top map"></div>
       <div class="card-body">
+        <p data-id="when" class="float-end text-muted opacity-75 small"></p>
         <h5 class="card-title"><i class="bi bi-water"></i> <span data-id="title">Yesterday - Gerrans TR2</span></h5>
         <p class="card-text small text-muted"><i class="bi bi-cloud-rain"></i> Rain, Partially cloudy. 11.1 ºC. Felt
           like 11.1 ºC. <br class=" d-md-none ">Humidity 92.1%. Wind 20.9 km/h, Gust 25.5 km/h, Direction W</p>
@@ -144,7 +153,7 @@
                 <small><i class="bi bi-thermometer-half"></i> Avg</small>
               </div>
               <div>
-                <span data-id="avgTemp">-</span> c
+                <span data-id="avgTemp">-</span> °C
               </div>
             </div>
             <div class="col-4 col-md-2">
@@ -152,7 +161,7 @@
                 <small><i class="bi bi-thermometer-high"></i> Max</small>
               </div>
               <div>
-                <span data-id="maxTemp">-</span> c
+                <span data-id="maxTemp">-</span> °C
               </div>
             </div>
             <div class="col-4 col-md-2">
@@ -160,7 +169,7 @@
                 <small><i class="bi bi-thermometer-low"></i> Min</small>
               </div>
               <div>
-                <span data-id="minTemp">-</span> c
+                <span data-id="minTemp">-</span> °C
               </div>
             </div>
             <div class="col-md-2 d-none d-md-block">
@@ -168,7 +177,7 @@
                 <small><i class="bi bi-thermometer"></i> Range</small>
               </div>
               <div>
-                <span data-id="rngTemp">-</span> c
+                <span data-id="rngTemp">-</span> °C
               </div>
             </div>
           </div>
