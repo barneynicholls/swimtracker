@@ -32,10 +32,8 @@ WebServer server(80);
 
 // SD CARD
 #include "FS.h"
-
-// DISPLAY
-// #include <SwimDisplay.h>
-// SwimDisplay displayOld;
+#include "SD.h"
+#include "SPI.h"
 
 // DS18B20 temperature sensor
 #include <OneWire.h>
@@ -91,18 +89,6 @@ static void smartdelay(unsigned long ms)
   } while (millis() - start < ms);
 }
 
-void handleRoot()
-{
-  char html[1000];
-
-  sprintf(
-      html,
-      "<html><head><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css\" integrity=\"sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65\" crossorigin=\"anonymous\"><title>Swim Tracker</title><meta http-equiv=\"refresh\" content=\"10\"></head><body><h1>Swim Tracker</h1><h2>Current</h2><p>Temperature: %.1fc</p><h2>Archive</h2><p><a href='/data'>Retrieve Data</a></p><p><a href='/delete'>Delete Data</a></p></body></html>",
-      temperature);
-
-  server.send(200, "text/html", html);
-}
-
 void handleNotFound()
 {
   String message = "File Not Found";
@@ -147,10 +133,17 @@ void setup(void)
   // wifi
   WiFi.begin(ssid, password);
 
+  SD.begin();
+
   // web server
+  server.serveStatic("/", SD, "/index.html");
+  server.serveStatic("/styles.css", SD, "/styles.css");
+  server.serveStatic("/config.js", SD, "/config.js");
+  server.serveStatic("/main.js", SD, "/main.js");
+
   server.on("/data", HTTP_GET, getData);
   server.on("/delete", HTTP_GET, deleteData);
-  server.on("/", handleRoot);
+
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("HTTP server started");

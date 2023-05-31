@@ -1,6 +1,6 @@
 async function getData() {
 
-    fetch('./swim.json')
+    fetch('/data')
         .then((response) => {
             return response.text();
         })
@@ -11,9 +11,13 @@ async function getData() {
             let swim = [];
 
             rows.map(function (record) {
+
+                if(!record)
+                    return;
+
                 const info = JSON.parse(record);
 
-                if (info.recording == "1" && !isNaN(Date.parse(info.date))) {
+                if (info.recording == 1 && !isNaN(Date.parse(info.date))) {
                     const rec = {
                         "created": info.date,
                         "temp": info.temp,
@@ -24,7 +28,7 @@ async function getData() {
                     swim.push(rec);
                 }
 
-                if (info.recording == "0" && swim.length > 0) {
+                if (info.recording == 0 && swim.length > 0) {
 
                     swims.push(swim);
                     swim = [];
