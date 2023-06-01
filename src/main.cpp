@@ -17,6 +17,10 @@ const int LED_RECORDING = 32;
 // BUTTON
 const int BUTTON_REC = 35;
 
+// DISPLAY
+#include <U8g2lib.h>
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
+
 // WIFI
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -130,6 +134,9 @@ void setup(void)
   // BUTTONS
   pinMode(BUTTON_REC, INPUT);
 
+  // DISPLAY
+  u8g2.begin();
+
   // wifi
   WiFi.begin(ssid, password);
 
@@ -179,6 +186,14 @@ void loop(void)
     // Check for OTA updates
     ArduinoOTA.handle();
   }
+
+  u8g2.firstPage();
+  do
+  {
+    u8g2.setFont(u8g2_font_crox4h_tf);
+    String status = wifiConnected ? WiFi.localIP().toString() : "- - -.- - -.- - -.- - -";
+    u8g2.drawStr(0, 40, status.c_str());
+  } while (u8g2.nextPage());
 
   char test[200];
 
